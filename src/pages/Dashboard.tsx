@@ -208,8 +208,7 @@ export function Dashboard() {
                         <div className="text-cyan-400 text-sm">REVERSE MOUNTAIN INSPECTION</div>
                       </div>
                       {(() => {
-                        const isGranted = logPose.hasLogPose || logPose.granted || logPose.logPoseGranted || logPose.approved || logPose.logPose === true || logPose.status === 'GRANTED' || logPose.inspectionPassed === true || logPose.canEnterGrandLine === true;
-                        const needsInspection = logPose.needsInspection || logPose.requiredForGrandLine || (!isGranted && logPose.status !== 'GRANTED');
+                        const isGranted = logPose.status === 'UNLOCKED' || logPose.grandLineUnlocked === true || logPose.hasLogPose === true || logPose.granted === true || logPose.logPoseGranted === true || logPose.approved === true || logPose.logPose === true || logPose.status === 'GRANTED' || logPose.inspectionPassed === true || logPose.canEnterGrandLine === true;
                         return (
                           <>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -228,7 +227,7 @@ export function Dashboard() {
                               <div className="bg-[#0c1e3d] border-2 border-cyan-600 rounded p-3">
                                 <div className="text-cyan-400 text-xs mb-1">LOG POSE</div>
                                 <div className={`text-lg font-bold ${isGranted ? 'text-green-400' : 'text-yellow-400'}`}>
-                                  {isGranted ? '✓ ADQUIRIDO' : '⏳ NO ADQUIRIDO'}
+                                  {isGranted ? '✓ `ADQUIRIDO`' : '⏳ NO ADQUIRIDO'}
                                 </div>
                               </div>
                             </div>
@@ -240,9 +239,7 @@ export function Dashboard() {
                                 <div className={`absolute -top-2 left-1/2 transform -translate-x-1/2 w-1 h-4 ${isGranted ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
                               </div>
                             </div>
-                            <div className={`text-center p-3 rounded border-2 font-bold ${isGranted ? 'bg-green-900/50 border-green-400 text-green-300' : 'bg-yellow-900/50 border-yellow-400 text-yellow-300'}`}>
-                              {isGranted ? '⛵ AUTORIZADO PARA ENTRAR AL GRAND LINE' : '⚠️ SE REQUIERE APROBAR INSPECCIÓN EN REVERSE MOUNTAIN'}
-                            </div>
+                            
                           </>
                         );
                       })()}

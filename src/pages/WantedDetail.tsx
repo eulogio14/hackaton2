@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { apiFetch } from '../api/client';
 import type { Wanted } from '../types/wanted';
+import { getOnePieceImage } from '../utils/onepieceImages';
 
 export function WantedDetail() {
   const { id } = useParams();
@@ -84,8 +85,13 @@ export function WantedDetail() {
                 <div className="text-2xl font-bold text-[#654321] italic">"{data.epithet}"</div>
               )}
             </div>
-            <div className="border-4 border-[#8b4513] mb-6 h-48 bg-gradient-to-b from-[#d2691e]/30 to-[#8b4513]/30 flex items-center justify-center">
-              <div className="text-8xl opacity-50">🏴‍☠️</div>
+            <div className="border-4 border-[#8b4513] mb-6 h-72 bg-gradient-to-b from-[#d2691e]/30 to-[#8b4513]/30 overflow-hidden flex items-center justify-center">
+              <img
+                src={getOnePieceImage(data.id)}
+                alt={data.name}
+                className="w-full h-full object-contain"
+                loading="lazy"
+              />
             </div>
             <div className="bg-[#8b0000] border-4 border-[#600000] p-4 mb-6 text-center">
               <div className="text-[#fbbf24] text-sm font-bold tracking-widest mb-1">DEAD OR ALIVE</div>

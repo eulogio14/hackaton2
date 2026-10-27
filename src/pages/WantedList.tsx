@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiFetch } from '../api/client';
 import type { WantedPage } from '../types/wanted';
+import { getOnePieceImage } from '../utils/onepieceImages';
 
 const SIZES = [10, 20, 50];
 const SORTS = [
@@ -203,8 +204,13 @@ export function WantedList() {
                       <div className="text-[#fbbf24] font-black text-xs tracking-widest" style={{ fontFamily: 'Georgia, serif' }}>WANTED</div>
                     </div>
                     <div className="pt-8 px-4 pb-4">
-                      <div className="border-2 border-[#8b4513] mb-3 h-32 bg-gradient-to-b from-[#d2691e]/20 to-[#8b4513]/20 flex items-center justify-center">
-                        <div className="text-6xl opacity-40">🏴‍☠️</div>
+                      <div className="border-2 border-[#8b4513] mb-3 h-40 bg-gradient-to-b from-[#d2691e]/20 to-[#8b4513]/20 overflow-hidden flex items-center justify-center">
+                        <img
+                          src={getOnePieceImage(w.id)}
+                          alt={w.name}
+                          className="w-full h-full object-contain"
+                          loading="lazy"
+                        />
                       </div>
                       <div className="text-center mb-2 border-b-2 border-[#8b4513] pb-2">
                         <div className="text-lg font-black text-[#8b0000] uppercase tracking-wide" style={{ fontFamily: 'Georgia, serif' }}>

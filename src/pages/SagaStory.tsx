@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { apiFetch } from '../api/client';
-import type { SagaStory, SagaStage } from '../types/sagas';
+import type { SagaStory } from '../types/sagas';
 
 export function SagaStoryPage() {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [data, setData] = useState<SagaStory | null>(null);
+  const [data, setData] = useState<SagaStory | any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -23,7 +23,7 @@ export function SagaStoryPage() {
         setActiveIndex(idx);
         setTimeout(() => {
           stageRefs.current[idx]?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
-        }, 50);
+        }, 100);
       }
     }
   }, [stageParam, data]);
@@ -52,9 +52,9 @@ export function SagaStoryPage() {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.4) {
             const idx = stageRefs.current.findIndex((el) => el === entry.target);
-            if (idx >= 0) {
+            if (idx >= 0 && idx !== activeIndex) {
               setActiveIndex(idx);
               const next = new URLSearchParams(searchParams);
               next.set('stage', String(idx));
@@ -63,7 +63,7 @@ export function SagaStoryPage() {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: [0.4, 0.6, 0.8] }
     );
     stageRefs.current.forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
@@ -144,13 +144,13 @@ export function SagaStoryPage() {
                 stageRefs.current[idx] = el;
               }}
               className="relative bg-gradient-to-b from-amber-50 to-amber-100 border-6 border-purple-900 rounded-lg p-8 min-h-[60vh] shadow-2xl"
-              style={idx === activeIndex && (activeStage?.colors?.bg || stage?.colors?.bg) ? { background: activeStage?.colors?.bg || stage?.colors?.bg } : {}}
+              style={idx === activeIndex ? { background: activeStage?.colors?.bg || stage?.colors?.bg || '#fef3c7', transition: 'background 0.3s' } : { background: '#fef3c7' }}
             >
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-purple-900 text-purple-50 px-6 py-2 rounded font-bold">ETAPA {idx + 1}</div>
               <h2 className="text-2xl font-bold text-purple-900 mb-4 mt-4" style={{ fontFamily: 'Georgia, serif' }}>{stage.title || stage.name || `Etapa ${idx + 1}`}</h2>
               {(stage.island?.name || stage.island) && <div className="mb-4 text-purple-800 font-semibold">🏝️ {stage.island?.name || stage.island}</div>}
               <div className="whitespace-pre-wrap text-amber-900 leading-relaxed mb-6 bg-white/50 p-4 rounded">{stage.narrative || stage.description || stage.content || ''}</div>
-              {stage.metrics && idx === activeIndex && <div className="flex flex-wrap gap-2">{Object.entries(stage.metrics).map(([k,v]: any) => <span key={k} className="bg-purple-700 text-white px-3 py-1 rounded">{k}: {String(v)}</span>)}</div>}
+              {stage.metrics && idx === activeIndex && <div className="flex flex-wrap gap-2">{Object.entries(stage.metrics).map(([k,v]: any) => <span key={k} className="bg-purple-700 text-white px-3 py-1 rounded">{k}: {typeof v === 'object' && v !== null ? (Array.isArray(v) ? v.join(', ') : JSON.stringify(v)) : String(v)}</span>)}</div>}
             </section>
           ))}
         </div>
